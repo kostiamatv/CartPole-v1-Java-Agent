@@ -47,4 +47,11 @@ public class EnvironmentState {
     public void setThetaVel(double thetaVel) {
         this.thetaVel = thetaVel;
     }
+
+    public void update(double x, double xVel, double theta, double thetaVel){
+        setX(x);
+        setXVel(xVel);
+        setTheta(theta);
+        setThetaVel(thetaVel);
+    }
 }
