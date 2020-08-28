@@ -22,11 +22,10 @@ public class CartPoleEnvironment {
     private final double thetaThresholdRadians;
     private final double xThreshold;
 
-    private EnvironmentState state = new EnvironmentState();
+    private final EnvironmentState state = new EnvironmentState();
 
     private int seed;
     private Random random;
-
 
     public CartPoleEnvironment(double gravity,
                                double massCart,
@@ -36,8 +35,7 @@ public class CartPoleEnvironment {
                                double tau,
                                String kinematicsIntegrator,
                                double thetaThresholdRadians,
-                               double xThreshold
-    ) {
+                               double xThreshold) {
         this.gravity = gravity;
         this.massCart = massCart;
         this.massPole = massPole;
@@ -77,12 +75,10 @@ public class CartPoleEnvironment {
         double cosTheta = Math.cos(theta);
         double sinTheta = Math.sin(theta);
 
-        double temp = (force + poleMassLength * Math.pow(thetaVel, 2) * sinTheta)
-                / totalMass;
+        double temp = (force + poleMassLength * Math.pow(thetaVel, 2) * sinTheta) / totalMass;
         double thetaAcc = (gravity * sinTheta - cosTheta * temp)
                 / (length * (4.0 / 3.0 - massPole * Math.pow(cosTheta, 2) / totalMass));
-        double xAcc = temp - poleMassLength * thetaAcc * cosTheta
-                / totalMass;
+        double xAcc = temp - poleMassLength * thetaAcc * cosTheta / totalMass;
         if (kinematicsIntegrator.equals("euler")) {
             x += xVel * tau;
             xVel += xAcc * tau;
@@ -94,15 +90,10 @@ public class CartPoleEnvironment {
             thetaVel += thetaAcc * tau;
             theta += thetaVel * tau;
         }
-        state.setX(x);
-        state.setXVel(xVel);
-        state.setTheta(theta);
-        state.setThetaVel(thetaVel);
 
-        return (x < -xThreshold
-                || x > xThreshold
-                || theta < -thetaThresholdRadians
-                || theta > thetaThresholdRadians);
+        state.update(x, xVel, theta, thetaVel);
+
+        return isDone(x, theta);
     }
 
     public EnvironmentState getState() {
@@ -121,4 +112,10 @@ public class CartPoleEnvironment {
         return min + random.nextDouble() * (max - min);
     }
 
+    private boolean isDone(double x, double theta){
+        return (x < -xThreshold
+                || x > xThreshold
+                || theta < -thetaThresholdRadians
+                || theta > thetaThresholdRadians);
+    }
 }
