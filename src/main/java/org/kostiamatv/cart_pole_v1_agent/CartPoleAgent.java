@@ -12,6 +12,7 @@ public class CartPoleAgent {
         DQN dqn = new DQN();
         int run = 0;
         double avg = 0;
+
         while (avg < 195) {
             run += 1;
             EnvironmentState state = environment.reset();
